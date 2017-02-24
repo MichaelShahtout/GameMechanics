@@ -1,0 +1,67 @@
+local mob = script.Parent
+local h = mob:FindFirstChild("CHealth")
+
+
+local b = Instance.new("BillboardGui", mob.PrimaryPart)
+b.Size = UDim2.new(4, 0, 1, 0)
+b.StudsOffset = Vector3.new(0, 2, 0)
+
+
+local f = Instance.new("Frame", b)
+f.Size = UDim2.new(1, 0, 0.2, 0)
+f.BackgroundColor3 = Color3.new(218/255, 23/255, 31/255)
+f.BorderSizePixel = 0
+
+local hbar = Instance.new("Frame", f)
+hbar.Size = UDim2.new(1, 0, 1, 0)
+hbar.BackgroundColor3 = Color3.new(64/255, 165/255, 57/255)
+hbar.BorderSizePixel = 0
+
+local glow1 = Instance.new("ImageLabel", hbar)
+glow1.Size = UDim2.new(0, 20 ,2, 0)
+glow1.BackgroundTransparency = 1
+glow1.Image = "rbxassetid://280516525"
+glow1.Position = UDim2.new(0, -10, -0.5, 0)
+glow1.ImageColor3 = Color3.new(46/255, 189/255, 48/255)
+glow1.ZIndex = 2
+
+local glow2 = glow1:clone()
+glow2.Parent = hbar
+glow2.Position = UDim2.new(1, -10 , -0.5, 0)
+
+--Make glow fade away
+hbar.Changed:connect(function()
+	if hbar.Size.X.Scale <= .2 then
+		glow1.ImageTransparency = 1 - (hbar.Size.X.Scale/.2)
+		glow2.ImageTransparency = 1 - (hbar.Size.X.Scale/.2)
+	else
+		glow1.ImageTransparency = 0
+		glow2.ImageTransparency = 0
+	end
+end)
+
+h.Changed:Connect(function(newVal)
+	hbar:TweenSizeAndPosition(UDim2.new(newVal/h.MaxValue, 0, 1, 0), UDim2.new((1 - (newVal/h.MaxValue))/2, 0, 0, 0), "Out", "Quad", 0.5, true)
+	if newVal <= 0 then	
+		
+		game.Debris:AddItem(glow1, 1)
+		game.Debris:AddItem(glow2, 1)
+		
+		local meme = 0
+		repeat
+			for _, child in ipairs(mob:GetChildren()) do
+				if child:IsA("UnionOperation") or child:IsA("MeshPart") or child:IsA("Part") then
+					child.Transparency = child.Transparency + 0.02
+				end
+			end
+			glow1.ImageTransparency = glow1.ImageTransparency + .02
+			glow2.ImageTransparency = glow2.ImageTransparency + .02
+			f.BackgroundTransparency = f.BackgroundTransparency + .02
+			meme = meme + 2
+			wait(0.01)
+		until meme >= 100
+		script.Parent:Destroy()
+	end
+end)
+
+
