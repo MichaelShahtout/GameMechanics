@@ -1,0 +1,41 @@
+--[===[
+	function: getAllDescendants(Object item, String typeOf)
+		
+		- Description:
+			Takes an object and returns all the descendants of a given type (if given argument typeOf)
+	
+		
+		- Return type: table of objects
+			
+		- Arguments:
+			
+			Object item
+				- Must be an item
+				- If it's nil, the function will return an empty table
+					
+			String typeOf
+				- The type of Object that you want to find in all the descedants
+					ex: "Frame", or "BasePart"
+				- If not supplied, will return all types
+--]===]
+
+
+function _M.getAllDescendants(item, typeOf)
+	local tbl = {} -- Initialize a table that we will return
+	if item then -- check if the item is not nil
+		local function add(item, typeOf) -- create a function add() which takes the same arguments as the above function
+			for _, thing in ipairs(item:GetChildren()) do -- for every object in the item given,
+				if #thing:GetChildren() > 0 then -- if it has a child,
+					add(thing, typeOf) -- recurse through that child and repeat the process
+				end
+				if typeOf and thing:IsA(typeOf) then -- if typeOf was supplied, then check if the given object is that type
+					table.insert(tbl, 1, thing) -- if it is, then add it to the table
+				else
+					table.insert(tbl, 1, thing) -- if typeOf wasn't given, then just add it to the table regardless
+				end
+			end
+		end
+		add(item, typeOf) -- run it initially
+	end
+	return tbl -- return the table
+end
