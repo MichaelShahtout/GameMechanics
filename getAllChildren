@@ -10,7 +10,7 @@
 		- Arguments:
 			
 			Object item
-				- Must be an item
+				- Must be an object
 				- If it's nil, the function will return an empty table
 					
 			String typeOf
